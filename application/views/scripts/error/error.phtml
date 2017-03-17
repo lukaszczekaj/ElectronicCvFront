@@ -1,0 +1,27 @@
+<div class="background-404">
+    <h2 class="h2-404"><?php echo $this->code ?></h2>
+
+    <p class="p-white-404">Coś poszło nie tak</p>
+
+    <p class="p-blue-404"><?php echo $this->message ?></p>
+   <!--<p class="p-blue-404">Strona o podanym adresie nie istnieje.</p>
+    <p class="p-white-404"> Skorzystaj z przycisku, aby z nami znaleźć drogę do domu.</p>-->
+
+    <a class="btn-404">Powrót</a>
+
+    <?php if (isset($this->exception)): ?>
+
+
+        <p class="p-blue-404"> <b>Message:</b> <?php echo $this->exception->getMessage() ?></p>
+
+        <h3>Stack trace:</h3>
+        <pre><?php echo $this->exception->getTraceAsString() ?>
+        </pre>
+
+        <h3>Request Parameters:</h3>
+        <pre><?php echo $this->escape(var_export($this->request->getParams(), true)) ?>
+        </pre>
+
+    <?php endif ?>
+
+</div>
