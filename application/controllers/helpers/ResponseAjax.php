@@ -10,11 +10,11 @@ class Zend_Controller_Action_Helper_ResponseAjax extends Zend_Controller_Action_
      * @ajax
      * @return ajax
      */
-    public function response($succes, $code = Application_Model_AjaxResponseCode::CODE_OK, $data = null) {
+    public function response($code = Application_Model_AjaxResponseCode::CODE_OK, $data = null) {
         $layout = Zend_Layout::getMvcInstance();
         $layout->disableLayout();
         $this->getActionController()->getHelper('ViewRenderer')->setNoRender(true);
-        echo json_encode(array('success' => $succes, 'code' => $code, 'data' => $data));
+        echo json_encode(array('success' => true, 'code' => $code, 'data' => $data));
     }
 
     public function responseJSON($json) {

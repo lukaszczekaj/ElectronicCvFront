@@ -3,7 +3,7 @@
 class ErrorController extends Zend_Controller_Action {
 
     public function init() {
-   //     $this->_helper->layout()->disableLayout();  //nie renderuje widoku calego layoutu dla innych akcji
+        $this->_helper->layout()->disableLayout();  //nie renderuje widoku calego layoutu dla innych akcji
     }
 
     public function errorAction() {

@@ -20,7 +20,31 @@ class AuthController extends Zend_Controller_Action {
     }
 
     public function logonAction() {
-        
+        $this->_helper->layout()->disableLayout();
+
+        $authorization = Zend_Auth::getInstance();
+        if ($authorization->hasIdentity()) {
+            $this->redirect('');
+        }
+
+        $authorization->setStorage(new Zend_Auth_Storage_Session('Zend_Auth'));
+
+        $login = $this->getParam('login');
+        $password = $this->getParam('password');
+
+        $myAdapter = new My_Auth_Adapter();
+
+        $myAdapter->setIdentity($login);
+        $myAdapter->setCredential($password);
+        $auth = Zend_Auth::getInstance();
+        $result = $auth->authenticate($myAdapter);
+        if ($result->isValid()) {
+            $storage = $auth->getStorage();
+            $storage->write($myAdapter->getResultRowObject());
+            $this->redirect('');
+        } else {
+            Application_Model_Exception::exception($this->_helper, array(), new Exception('Niepoprawne dane logowania'));
+        }
     }
 
     /**
@@ -52,11 +76,17 @@ class AuthController extends Zend_Controller_Action {
         
     }
 
+    public function loginAction() {
+        $this->_helper->layout()->disableLayout();
+    }
+
     /**
      * Wylogowanie z systemu
      */
     public function logoutAction() {
-        
+        $auth = Zend_Auth::getInstance();
+        $auth->clearIdentity();
+        $this->redirect('');
     }
 
     /**
@@ -79,6 +109,56 @@ class AuthController extends Zend_Controller_Action {
      */
     public function extensionLogonSessionAction() {
         
+    }
+
+}
+
+require_once 'Zend/Auth/Adapter/Interface.php';
+
+class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
+
+    protected $_identity = null;
+    protected $_credential = null;
+    protected $_resultRow = array();
+
+    public function __construct() {
+        
+    }
+
+    public function authenticate() {
+
+        $result = 0;
+        if ($this->_identity == 'test' && $this->_credential == '123') {
+            $result = 1;
+            $this->_resultRow = array(
+                'login' => $this->_identity,
+                'authToken' => '',
+                'name' => 'Test Testowy'
+            );
+        }
+        $authResult = new Zend_Auth_Result($result, $this->_identity);
+        return $authResult;
+    }
+
+    public function setIdentity($value) {
+        $this->_identity = $value;
+        return $this;
+    }
+
+    public function setCredential($credential) {
+        $this->_credential = $credential;
+        return $this;
+    }
+
+    public function getResultRowObject() {
+
+        $returnObject = new stdClass();
+
+        foreach ($this->_resultRow as $resultColumn => $resultValue) {
+            $returnObject->{$resultColumn} = $resultValue;
+        }
+
+        return $returnObject;
     }
 
 }

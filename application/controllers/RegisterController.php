@@ -13,13 +13,10 @@ class RegisterController extends Zend_Controller_Action {
 
     public function init() {
         $this->viewHelper = new Zend_View_Helper_Action();
+        $this->_helper->layout()->disableLayout();
     }
 
     public function indexAction() {
-        
-    }
-
-    public function registerUserAction() {
         
     }
 
