@@ -16,6 +16,7 @@ class CvController extends Zend_Controller_Action {
             $this->redirect('/auth/login');
         }
         $this->view->page = 'Moje CV';
+        $this->view->menuPage = 'cv';
     }
 
     public function indexAction() {
