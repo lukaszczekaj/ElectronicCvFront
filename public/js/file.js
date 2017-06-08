@@ -30,7 +30,5 @@ $(document).ready(function () {
         wk.ajax(action, input);
     });
     
-    
-
 
 });

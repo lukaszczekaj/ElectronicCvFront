@@ -236,7 +236,10 @@ function showAlert(msg, type, title, time) {
     $('.alert .msg-text').text(msg);
     $('.alert').attr('data-alert-type', type);
     $('.alert').fadeIn().addClass(type);
-    //hideAlert(type, time);
+    if (!time) {
+        time = 5000;
+    }
+    hideAlert(time);
 }
 
 
