@@ -14,5 +14,23 @@ $(document).ready(function () {
         var input = getFormData('#registerForm');
         wk.ajax('/register/register-user', input);
     });
+    
+    $(document).on('click', '.close-alert', function (event) {
+        event.preventDefault();
+        hideAlert();
+    });
+    
+    $(document).on('click', '.formSubmit', function (event) {
+        event.preventDefault();
+        var form = $(this).parent().closest('form');
+        var action = form.attr('action');
+        var input = getFormData('#' + form.attr('id'));
+        console.info(input);
+        console.info(action);
+        wk.ajax(action, input);
+    });
+    
+    
+
 
 });

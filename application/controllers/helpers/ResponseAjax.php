@@ -14,6 +14,9 @@ class Zend_Controller_Action_Helper_ResponseAjax extends Zend_Controller_Action_
         $layout = Zend_Layout::getMvcInstance();
         $layout->disableLayout();
         $this->getActionController()->getHelper('ViewRenderer')->setNoRender(true);
+        if (!is_null($data) && !is_array($data)) {
+            $data = array('msg' => $data);
+        }
         echo json_encode(array('success' => true, 'code' => $code, 'data' => $data));
     }
 
@@ -45,8 +48,8 @@ class Zend_Controller_Action_Helper_ResponseAjax extends Zend_Controller_Action_
         $this->getActionController()->getHelper('ViewRenderer')->setNoRender(true);
         echo json_encode($data);
     }
-    
-     public function responseView($view) {
+
+    public function responseView($view) {
         $layout = Zend_Layout::getMvcInstance();
         $layout->disableLayout();
         $this->getActionController()->getHelper('ViewRenderer')->setNoRender(true);

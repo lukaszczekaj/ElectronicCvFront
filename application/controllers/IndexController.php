@@ -14,7 +14,12 @@ class IndexController extends Zend_Controller_Action {
     }
 
     public function indexAction() {
-        
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', 'http://electroniccvapi.local/app_dev.php/api/test');
+        var_dump($res->getStatusCode());
+        var_dump($res->getHeaderLine('content-type'));
+        $a = json_decode($res->getBody(), true);
+        var_dump($a);
     }
 
 }

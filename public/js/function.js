@@ -13,17 +13,29 @@ var templateLanguage = {
     ERROR_TEXT: 'Nierozpoznany błąd w ajax'
 };
 var dialog = {
-    primary: function (title, msg, time) {
-        showAlert(msg, 'primary', time);
+    info: function (title, msg, time) {
+        if (!title) {
+            title = 'Informacja';
+        }
+        showAlert(msg, 'alert-info', title, time);
     },
     error: function (title, msg, time) {
-        showAlert(msg, 'failure', time);
+        if (!title) {
+            title = 'Błąd';
+        }
+        showAlert(msg, 'alert-danger', title, time);
     },
     succes: function (title, msg, time) {
-        showAlert(msg, 'success', time);
+        if (!title) {
+            title = 'Sukces';
+        }
+        showAlert(msg, 'alert-success', title, time);
     },
     warn: function (title, msg, time) {
-        showAlert(msg, 'warning', time);
+        if (!title) {
+            title = 'Uwaga';
+        }
+        showAlert(msg, 'alert-warning', title, time);
     }
 };
 var wk = {
@@ -65,8 +77,6 @@ var wk = {
      * @returns {undefined}
      */
     ajax: function (href, inputData, responseDIVname, dataFunction, errorFunction, okFunction, warnFunction, allRunFunction, sync, ajaxContentType, ajaxProcessData, disableScroll) {
-
-        // TODO dopracować na nasze potrzeby
 
         if (wk.ajaxAnimate) {
             //  $('#ajax_komunikat').show();
@@ -146,12 +156,13 @@ var wk = {
                             window.history.pushState(href, "", href);
                         }
                         if (!dataFunction) {
-                            scrollToElement('.l-main-nav');
+                            scrollToElement('.main-header');
                         }
                         break;
                     default:
                         console.error(templateLanguage.ERROR_TITLE, templateLanguage.ERROR_TEXT);
                 }
+                scrollToElement('.main-header');
                 if ($.isFunction(allRunFunction)) {
                     allRunFunction(data); //w data.data content
                 }
@@ -159,6 +170,7 @@ var wk = {
                 wk.ajaxAnimate = true;
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                scrollToElement('.main-header');
                 console.log('Funkcja error');
                 console.log(jqXHR);
                 //     dialog.error(templateLanguage.ERROR_TITLE, templateLanguage.ERROR_TEXT);
@@ -196,12 +208,12 @@ var wk = {
                 wk.ajaxAnimate = true;
             },
             beforeSend: function () {
-                if (wk.progressBar) {
-                    progressBarShow();
-                }
+//                if (wk.progressBar) {
+//                    progressBarShow();
+//                }
             }
         }).done(function () {
-            progressBarHide();
+           // progressBarHide();
         });
     },
     otherFunctionRunner: null,
@@ -215,50 +227,32 @@ var wk = {
                     console.log('session ext');
                 });
     },
-    reservation: {
-        offerName: '',
-        price: '',
-        priceValue: '',
-        date: '',
-    },
     clearIntervals: function () {
-        clearInterval(wk.checkPaymentStatusInterval);
-        clearInterval(wk.intervalCoutdownOpenDoor);
-    },
-    checkPaymentStatusInterval: null,
-    intervalCoutdownOpenDoor: null,
-    offer: {
-        formStep1: {
-        },
-        formStep2: {
-        },
-        formStep3: {
-        }
     }
 };
-var datepicker = {
-    isInit: false,
-    init: function (input) {
 
-        if (typeof localePrefix === "undefined") {
-            throw "Brak informacji o używanej wersji językowej!";
-        }
+function showAlert(msg, type, title, time) {
+    $('.alert .msg-type').text(title);
+    $('.alert .msg-text').text(msg);
+    $('.alert').attr('data-alert-type', type);
+    $('.alert').fadeIn().addClass(type);
+    //hideAlert(type, time);
+}
 
-        $.getScript('js/i18n/datepicker-' + localePrefix + '.js', function () {
 
-            $.datepicker.setDefaults($.datepicker.regional[ localePrefix ]);
-            var d = $.datepicker.parseDate($.datepicker.regional[ localePrefix ].dateFormat, $(input).val());
-            datepicker.add(input);
-        });
-    },
-    add: function (input) {
-        if (this.isInit === false) {
-            this.isInit = true;
-            this.init(input);
-        }
-        return  $(input).datepicker({altFormat: "dd-mm-yy"});
+function hideAlert(time) {
+    if (!time) {
+        time = 0;
     }
-};
+    setTimeout(function () {
+        $('.alert').fadeOut();
+        setTimeout(function () {
+            $('.alert').removeClass($('.alert').attr('data-alert-type'));
+        }, 400);
+        $('.alert.msg-type').text('');
+        $('.alert.msg-text').text('');
+    }, time);
+}
 
 function scrollToElement(element) {
     //  event.preventDefault();

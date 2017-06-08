@@ -1,0 +1,58 @@
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <h3 class="box-title">Podstawowe dane</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <form id="prifilePersonalDataForm" action="/profile/save">
+            <!-- text input -->
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" disabled class="form-control" placeholder="Adres e-mail">
+            </div>
+            <div class="form-group">
+                <label>Imie</label>
+                <input type="text" name="firstName" class="form-control" placeholder="Imię">
+            </div>
+            <div class="form-group">
+                <label>Nazwisko</label>
+                <input type="text" name="lastName" class="form-control" placeholder="Nazwisko">
+            </div>
+            <div class="form-group">
+                <label>PESEL</label>
+                <input type="text" name="pesel" class="form-control" placeholder="PESEL">
+            </div>
+            <div class="box-footer">
+                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
+            </div>
+        </form>
+    </div>
+    <!-- /.box-body -->
+</div>
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <h3 class="box-title">Zmiana hasła</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <form id="prifileChangePasswordForm" action="/profile/change-password">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Aktualne hasło</label>
+                <input type="password" name="passwordActual" class="form-control" placeholder="Aktualne hasło">
+            </div>
+            <div class="form-group">
+                <label>Nowe hasło</label>
+                <input type="password" name="password" class="form-control" placeholder="Nowe hasło">
+            </div>
+            <div class="form-group">
+                <label>Nowe hasło ponownie</label>
+                <input type="password" name="passwordAgain" class="form-control" placeholder="Nowe hasło ponownie">
+            </div>
+            <div class="box-footer">
+                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
+            </div>
+        </form>
+    </div>
+    <!-- /.box-body -->
+</div>
