@@ -1,0 +1,84 @@
+.pdf {
+
+    margin: 0px 40px 10px 40px;
+
+    .title {
+        text-align: right;
+        font-size: 25px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+    }
+
+    .item-header {
+
+        margin-bottom: 20px;
+
+        .item-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .div-table {
+            display: table;         
+            width: auto;         
+        }
+        .div-table-row {
+            display: table-row;
+            width: auto;
+            font-size: 14px;
+            //    clear: both;
+        }
+        .div-table-col {
+            float: left; 
+            display: table-column;         
+            width: 200px;         
+
+            > span {
+                display: table-row;
+            }
+
+        }
+
+        .bold {
+            font-weight: 700;
+        }
+
+        .hr {
+            border-top: 1px solid #8c8b8b;
+            margin-bottom: 10px;
+            margin-top: 2px;
+        }
+
+    }
+
+    .item {
+        @extend .item-header;
+        
+        margin-bottom: 15px;
+
+        .item-title {
+            text-transform: uppercase;
+        }
+
+        .div-table-row {
+            width: 100%;
+        }
+
+        .div-table-col-second {
+            display: table;
+            margin-bottom: 5px;
+        }
+        
+        li {
+            font-size: 14px;
+        }
+
+    }
+
+    .footer {
+        margin-top: 10px;
+        font-size: 11px;
+        font-style: italic;
+    }
+
+}

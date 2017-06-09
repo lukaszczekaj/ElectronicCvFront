@@ -1,0 +1,28 @@
+{
+  "name": "virtualkey",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.php",
+  "repository": {
+    "type": "git",
+    "url": "https://luki19@bitbucket.org/luki19/electroniccvfront.git"
+  },
+  "keywords": [
+    "ElectronicCV"
+  ],
+  "author": "Lukasz",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "browser-sync": "latest",
+    "cssnano": "latest",
+    "grunt": "^1.0.1",
+    "grunt-autoprefixer": "latest",
+    "grunt-browser-sync": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-php": "^1.5.1",
+    "grunt-postcss": "latest",
+    "grunt-sass": "latest",
+    "pixrem": "latest"
+  }
+}

@@ -33,7 +33,7 @@ var dialog = {
     },
     warn: function (title, msg, time) {
         if (!title) {
-            title = 'Uwaga';
+            title = 'Ostrzeżenie';
         }
         showAlert(msg, 'alert-warning', title, time);
     }
