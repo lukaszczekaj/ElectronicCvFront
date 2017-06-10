@@ -29,7 +29,7 @@ class AuthController extends Zend_Controller_Action {
 
         $authorization->setStorage(new Zend_Auth_Storage_Session('Zend_Auth'));
 
-        $login = $this->getParam('login');
+        $login = $this->getParam('mail');
         $password = $this->getParam('password');
 
         $myAdapter = new My_Auth_Adapter();
@@ -126,14 +126,32 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
     }
 
     public function authenticate() {
-
         $result = 0;
-        if ($this->_identity == 'test' && $this->_credential == '123') {
+        $error = false;
+
+        $api = new Application_Model_Api();
+
+        try {
+            $response = $api->login(array(
+                'mail' => $this->_identity,
+                'password' => $this->_credential
+            ));
+        } catch (Exception $exc) {
+            $error = true;
+        }
+        
+        if ($response->getStatus() !== 200) {
+            $error = true;
+        }
+        
+        if (!$error) {
             $result = 1;
+            $json = json_decode(sprintf('[%s]',$response->getBody()));
+            $msg = json_decode($json[0]);
             $this->_resultRow = array(
                 'login' => $this->_identity,
-                'authToken' => 'tu bedzie token autoryzujacy z rest api',
-                'name' => 'Test Testowy'
+                'authToken' => $msg->authToken,
+                'name' => $msg->name
             );
         }
         $authResult = new Zend_Auth_Result($result, $this->_identity);

@@ -21,16 +21,23 @@ class ProfileController extends Zend_Controller_Action {
     public function indexAction() {
         
     }
-    
+
     public function saveAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->updateProfile($form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+//        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, 'Zmiany zostały zapisane');
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
-    
+
     public function changePasswordAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
