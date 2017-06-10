@@ -53,7 +53,7 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana '. json_encode($form));
     }
 
     public function addEducationAction() {
@@ -62,7 +62,7 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana '. json_encode($form));
     }
 
     public function addWorkplaceAction() {
@@ -71,7 +71,7 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana '. json_encode($form));
     }
 
     public function addAdditionalSkillsAction() {
@@ -80,7 +80,7 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana '. json_encode($form));
     }
 
     public function pdfAction() {
@@ -146,7 +146,7 @@ class CvController extends Zend_Controller_Action {
         $pdf->getPDF();
         exit();
     }
-
+    
 }
 
 /**
