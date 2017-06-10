@@ -132,7 +132,7 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
             $result = 1;
             $this->_resultRow = array(
                 'login' => $this->_identity,
-                'authToken' => '',
+                'authToken' => 'tu bedzie token autoryzujacy z rest api',
                 'name' => 'Test Testowy'
             );
         }

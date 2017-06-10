@@ -1,58 +1,109 @@
-<div class="box box-info">
-    <div class="box-header with-border">
-        <h3 class="box-title">Podstawowe dane</h3>
+<div class="row">
+    <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <img class="profile-user-img img-responsive img-circle" src="/dist/img/user2-160x160.jpg" alt="User profile picture">
+
+                <h3 class="profile-username text-center"><?= Zend_Auth::getInstance()->getIdentity()->name ?></h3>
+
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Zapisanych CV</b> <a class="pull-right">-</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Zapisanych wykrztałceń</b> <a class="pull-right">-</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Zapisanych miejsc pracy</b> <a class="pull-right">-</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Zapisanych dodatkowych umiejętności</b> <a class="pull-right">-</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Zapisanych języków</b> <a class="pull-right">-</a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Zapisanych linków</b> <a class="pull-right">-</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
     </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <form id="prifilePersonalDataForm" action="/profile/save">
-            <!-- text input -->
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" disabled class="form-control" placeholder="Adres e-mail">
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#personal-data" data-toggle="tab">Podstawowe dane</a></li>
+                <li><a href="#change-password" data-toggle="tab">Zmiana hasła</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="active tab-pane" id="personal-data">
+
+                    <div class="box-body">
+                        <form id="prifilePersonalDataForm" action="/profile/save">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>E-mail</label>
+                                <input type="email" name="mail" disabled class="form-control" placeholder="Adres e-mail">
+                            </div>
+                            <div class="form-group">
+                                <label>Imie</label>
+                                <input type="text" name="firstName" class="form-control" placeholder="Imię">
+                            </div>
+                            <div class="form-group">
+                                <label>Nazwisko</label>
+                                <input type="text" name="lastName" class="form-control" placeholder="Nazwisko">
+                            </div>
+                            <div class="form-group">
+                                <label>PESEL</label>
+                                <input type="text" name="pesel" class="form-control" placeholder="PESEL">
+                            </div>
+                            <div class="box-footer">
+                                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="change-password">
+
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form id="prifileChangePasswordForm" action="/profile/change-password">
+                            <!-- text input -->
+                            <div class="form-group">
+                                <label>Aktualne hasło</label>
+                                <input type="password" name="passwordActual" class="form-control" placeholder="Aktualne hasło">
+                            </div>
+                            <div class="form-group">
+                                <label>Nowe hasło</label>
+                                <input type="password" name="password" class="form-control" placeholder="Nowe hasło">
+                            </div>
+                            <div class="form-group">
+                                <label>Nowe hasło ponownie</label>
+                                <input type="password" name="passwordAgain" class="form-control" placeholder="Nowe hasło ponownie">
+                            </div>
+                            <div class="box-footer">
+                                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+
+                </div>
+                <!-- /.tab-pane -->
             </div>
-            <div class="form-group">
-                <label>Imie</label>
-                <input type="text" name="firstName" class="form-control" placeholder="Imię">
-            </div>
-            <div class="form-group">
-                <label>Nazwisko</label>
-                <input type="text" name="lastName" class="form-control" placeholder="Nazwisko">
-            </div>
-            <div class="form-group">
-                <label>PESEL</label>
-                <input type="text" name="pesel" class="form-control" placeholder="PESEL">
-            </div>
-            <div class="box-footer">
-                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
-            </div>
-        </form>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
     </div>
-    <!-- /.box-body -->
+    <!-- /.col -->
 </div>
-<div class="box box-info">
-    <div class="box-header with-border">
-        <h3 class="box-title">Zmiana hasła</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <form id="prifileChangePasswordForm" action="/profile/change-password">
-            <!-- text input -->
-            <div class="form-group">
-                <label>Aktualne hasło</label>
-                <input type="password" name="passwordActual" class="form-control" placeholder="Aktualne hasło">
-            </div>
-            <div class="form-group">
-                <label>Nowe hasło</label>
-                <input type="password" name="password" class="form-control" placeholder="Nowe hasło">
-            </div>
-            <div class="form-group">
-                <label>Nowe hasło ponownie</label>
-                <input type="password" name="passwordAgain" class="form-control" placeholder="Nowe hasło ponownie">
-            </div>
-            <div class="box-footer">
-                <div class="btn btn-info pull-right formSubmit">Zapisz</div>
-            </div>
-        </form>
-    </div>
-    <!-- /.box-body -->
-</div>
+<!-- /.row -->

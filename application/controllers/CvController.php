@@ -39,10 +39,14 @@ class CvController extends Zend_Controller_Action {
         $this->view->subPage = 'Dodatkowe umiejętności';
     }
 
+    public function languagesAction() {
+        $this->view->subPage = 'Języki';
+    }
+
     public function linksAction() {
         $this->view->subPage = 'Linki';
     }
-    
+
     public function saveAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -51,7 +55,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
     }
-    
+
     public function addEducationAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -60,7 +64,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
     }
-    
+
     public function addWorkplaceAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -69,7 +73,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
     }
-    
+
     public function addAdditionalSkillsAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -78,11 +82,68 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
     }
-    
+
     public function pdfAction() {
+
+        $data = array(
+            'name' => 'Łukasz Czekaj',
+            'maritalStatus' => 'Kawaler',
+            'birthDate' => '1 czerwiec 1991',
+            'birthPlace' => 'Kielce',
+            'addressStreet' => 'Lechówek 47A',
+            'addressPost' => '26-025 Łagów',
+            'phone' => '874587344',
+            'mail' => 'lukasz@lukaszczekaj.pl',
+            'education' => array(
+                array(
+                    'date' => '2011 - nadal',
+                    'name' => 'Studia Inżynierskie na Politechnice Świętokrzyskiej w Kielcach, kierunek informatyka'
+                ),
+                array(
+                    'date' => '2007 - 2011',
+                    'name' => 'Zespół Szkół Informatycznych im. gen. Józefa Hauke Bosaka w Kielcach, tytuł technika informatyka'
+                )
+            ),
+            'workplace' => array(
+                array(
+                    'date' => '07.2013',
+                    'name' => 'Miesięczne praktyki zawodowe w firmie Complex Computers Sp. z o.o. w Kielcach'
+                ),
+                array(
+                    'date' => '05.2012',
+                    'name' => 'Uczestnictwo w kursie CCNA Exploration: Network Fundamentals'
+                ),
+                array(
+                    'date' => '06.2009 – 10.2010',
+                    'name' => 'Uczestnictwo w szkoleniu „Uczeń z międzynarodowym certyfikatem zawodowym- modelowe rozwiązanie dla świętokrzyskich pracodawców” realizowane przez COMBIDATA POLAND Sp. z o.o.'
+                )
+            ),
+            'languages' => array(
+                array(
+                    'name' => 'j. angielski',
+                    'description' => '- poziom średni w mowie i piśmie'
+                )
+            ),
+            'additionalSkills' => array(
+                array(
+                    'name' => 'szybkie nawiązywanie kontaktów, umiejętność współpracy w zespole'
+                ),
+                array(
+                    'name' => 'bardzo dobra obsługa komputera, znajomość systemów operacyjnych Windows oraz urządzeń peryferyjnych komputera'
+                ),
+                array(
+                    'name' => 'bardzo dobra znajomość zagadnień związanych z sieciami komputerowymi'
+                ),
+                array(
+                    'name' => 'prawo jazdy kat. B.'
+                )
+            ),
+            'interests' => 'muzyka, sport, elektronika'
+        );
+
         $pdf = new CvPdfGenerator();
+        $pdf->setData($data);
         $pdf->getPDF();
-        
         exit();
     }
 
@@ -93,10 +154,15 @@ class CvController extends Zend_Controller_Action {
  */
 class CvPdfGenerator {
 
-    private $data;
+    private $data = array();
+    private $layout = 1;
 
     public function setData($data) {
         $this->data = $data;
+    }
+
+    public function setLayout($layout) {
+        $this->layout = $layout;
     }
 
     public function getPDF($fileName = 'file.pdf', $type = 'I') {
@@ -113,8 +179,10 @@ class CvPdfGenerator {
     private function getHTML() {
         $invoiceHTML = new Zend_View();
         $invoiceHTML->setScriptPath(APPLICATION_PATH . '/views/scripts/cv');
-     //   $invoiceHTML->assign('invoiceData', $this->invoiceData);
-        return $invoiceHTML->render('pdf.phtml');
+        foreach ($this->data as $key => $value) {
+            $invoiceHTML->assign($key, $value);
+        }
+        return $invoiceHTML->render(sprintf('layout-pdf-%s.phtml', $this->layout));
     }
 
 }

@@ -1,0 +1,117 @@
+<div class="pdf">
+
+    <div class="title">Curriculum Vitae</div>
+
+    <div class="item-header">
+        <div class="item-title"><?= $this->name ?></div>
+        <div class="hr"></div>
+        <div class="div-table">
+            <div class="div-table-row">
+                <div class="div-table-col bold">Stan cywilny:</div>
+                <div class="div-table-col"><?= $this->maritalStatus ?></div>
+            </div>
+            <div class="div-table-row">
+                <div class="div-table-col bold">Data urodzenia:</div>
+                <div class="div-table-col"><?= $this->birthDate ?></div>
+            </div>
+            <div class="div-table-row">
+                <div class="div-table-col bold">Miejsce urodzenia:</div>
+                <div class="div-table-col"><?= $this->birthPlace ?></div>
+            </div>
+            <div class="div-table-row">
+                <div class="div-table-col bold">Adres:</div>
+                <div class="div-table-col">
+                    <span><?= $this->addressStreet ?></span>
+                    <span><?= $this->addressPost ?></span>
+                </div>
+            </div>
+            <div class="div-table-row">
+                <div class="div-table-col bold">Telefon:</div>
+                <div class="div-table-col"><?= $this->phone ?></div>
+            </div>
+            <div class="div-table-row">
+                <div class="div-table-col bold">Email:</div>
+                <div class="div-table-col"><?= $this->mail ?></div>
+            </div>
+
+        </div>
+    </div>
+
+    <?php if (isset($this->education)): ?>
+        <div class="item">
+            <div class="item-title">Wykrztałcenie</div>
+            <div class="hr"></div>
+            <div class="div-table">
+                <?php foreach ($this->education as $e): ?>
+                    <div class="div-table-row">
+                        <div class="div-table-col"><?= $e['date'] ?></div>
+                        <div class="div-table-col-second">
+                            <?= $e['name'] ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($this->workplace)): ?>
+        <div class="item">
+            <div class="item-title">Doświadczenie zawodowe</div>
+            <div class="hr"></div>
+            <div class="div-table">
+                <?php foreach ($this->workplace as $w): ?>
+                    <div class="div-table-row">
+                        <div class="div-table-col"><?= $w['date'] ?></div>
+                        <div class="div-table-col-second">
+                            <?= $w['name'] ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($this->languages)): ?>
+        <div class="item">
+            <div class="item-title">Języki</div>
+            <div class="hr"></div>
+            <?php foreach ($this->languages as $l): ?>
+                <div class="div-table-row">
+                    <div class="div-table-col listitem">
+                        <?= $l['name'] ?>
+                    </div>
+                    <div class="div-table-col-second">
+                        <?= $l['description'] ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($this->additionalSkills)): ?>
+        <div class="item">
+            <div class="item-title">Umiejętnośi</div>
+            <div class="hr"></div>
+            <ul>
+                <?php foreach ($this->additionalSkills as $as): ?>
+                    <li><?= $as['name'] ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($this->interests)): ?>
+        <div class="item">
+            <div class="item-title">Zainteresowania</div>
+            <div class="hr"></div>
+            <ul>
+                <li><?= $this->interests ?></li>
+            </ul>
+        </div>
+    <?php endif; ?>
+
+    <div class="footer">
+        Wyrażam zgodę na przetwarzanie moich danych osobowych dla potrzeb niezbędnych do realizacji procesu rekrutacji (zgodnie z Ustawą z dnia 29.08.1997 roku o Ochronie Danych Osobowych; tekst jednolity: Dz. U. z 2002r. Nr 101, poz. 926 ze zm.)
+    </div>
+
+</div>
