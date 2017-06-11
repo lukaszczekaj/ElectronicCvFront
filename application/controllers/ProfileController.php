@@ -38,6 +38,7 @@ class ProfileController extends Zend_Controller_Action {
             return $view;
         }
         $data = json_decode($response->getBody(), true);
+   //     var_dump($data);
         if (!is_array($data)) {
             return $view;
         }

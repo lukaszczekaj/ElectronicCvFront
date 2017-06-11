@@ -108,6 +108,19 @@ class Application_Model_Api {
         return $response;
     }
     
+    public function getCv($id) {
+        $response = $this->client->restGet(sprintf('/get-cv/%s/%s', $this->authToken, $id));
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
+    
     public function fetchUserData() {
         $response = $this->client->restGet(sprintf('/user-data/%s', $this->authToken));
         if ($response->getStatus() === 403) {

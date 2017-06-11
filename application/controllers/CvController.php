@@ -21,6 +21,26 @@ class CvController extends Zend_Controller_Action {
 
     public function indexAction() {
         $this->view->subPage = 'Zapisane CV';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-cv/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewCv($this->view, json_decode($response->getBody(), true));
+    }
+
+    private function feedViewCv($view, $cvs) {
+        $view->cvs = array();
+        var_dump($cvs);
+        if (!$cvs || !is_array($cvs)) {
+            return $view;
+        }
+        foreach ($cvs as $key => $value) {
+            
+        }
+        $this->view->cvs = $cvs;
+        return $view;
     }
 
     public function addAction() {
@@ -107,7 +127,13 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana ' . json_encode($form));
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->add('/add-cv/', $form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
     public function addEducationAction() {
@@ -124,7 +150,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
-    
+
     public function addLanguagesAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -154,7 +180,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
-    
+
     public function removeLanguagesAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -169,7 +195,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
-    
+
     public function removeWorkplaceAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -184,7 +210,7 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
-    
+
     public function removeAdditionalSkillsAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
@@ -216,7 +242,7 @@ class CvController extends Zend_Controller_Action {
     }
 
     public function addAdditionalSkillsAction() {
-       try {
+        try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
@@ -230,10 +256,36 @@ class CvController extends Zend_Controller_Action {
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
+    private function explodeCvData($cv, $userData) {
+        if (!$cv || !$userData) {
+            throw new Exception('Brak kompletnych danych');
+        }
+        $myCv = $userData;
+        $myCv['name'] = sprintf('%s %s', $userData['firstname'], $userData['lastname']);
+        
+        return $myCv;
+    }
+
     public function pdfAction() {
+        $api = new Application_Model_Api();
+        try {
+            $getCV = $api->getCv($this->getParam('id'));
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        try {
+            $userData = $api->fetchUserData();
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        try {
+            $cv = $this->explodeCvData(json_decode($getCV->getBody(), true), json_decode($userData->getBody(), true));
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+
 
         $data = array(
-            'name' => 'Łukasz Czekaj',
             'maritalStatus' => 'Kawaler',
             'birthDate' => '1 czerwiec 1991',
             'birthPlace' => 'Kielce',
@@ -284,12 +336,11 @@ class CvController extends Zend_Controller_Action {
                 array(
                     'name' => 'prawo jazdy kat. B.'
                 )
-            ),
-            'interests' => 'muzyka, sport, elektronika'
+            )
         );
 
         $pdf = new CvPdfGenerator();
-        $pdf->setData($data);
+        $pdf->setData($cv);
         $pdf->getPDF();
         exit();
     }
