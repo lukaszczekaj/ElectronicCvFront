@@ -21,20 +21,18 @@ class RegisterController extends Zend_Controller_Action {
     }
 
     public function registerUserAction() {
-        $form = array(
-            'mail' => $this->getParam('mail'),
-            'firstName' => $this->getParam('firstName'),
-            'lastName' => $this->getParam('lastName'),
-            'password' => $this->getParam('password'),
-            'retype-password' => $this->getParam('retype-password')
-        );
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
         $api = new Application_Model_Api();
         try {
             $response = $api->registerUser($form);
         } catch (Exception $exc) {
-            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
         }
-        $this->view->msg = $response->getBody();
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
 }

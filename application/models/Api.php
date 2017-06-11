@@ -16,14 +16,14 @@ class Application_Model_Api {
         $auth = Zend_Auth::getInstance();
         if ($auth->hasIdentity()) {
             $authData = Zend_Auth::getInstance()->getIdentity();
-            $this->data = array_merge($this->data, array('authToken' => $authData->authToken));
+            $this->authToken = $authData->authToken;
+            $this->data = array_merge($this->data, array('authToken' => $this->authToken));
         }
         $this->client = new Zend_Rest_Client($this->url);
     }
 
     public function registerUser($data = array()) {
         $response = $this->client->restPost('/register-user/', $data);
-        return $response;
         if ($response->getStatus() !== 200) {
             throw new Exception($response->getBody());
         }
@@ -42,6 +42,24 @@ class Application_Model_Api {
     public function updateProfile($data = array()) {
         $this->data = array_merge($this->data, $data);
         $response = $this->client->restPost('/update-profile/', $this->data);
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
+
+    public function fetchUserData() {
+        $response = $this->client->restGet(sprintf('/user-data/%s', $this->authToken));
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
         if ($response->getStatus() !== 200) {
             throw new Exception($response->getBody());
         }

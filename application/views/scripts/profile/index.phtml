@@ -49,19 +49,19 @@
                             <!-- text input -->
                             <div class="form-group">
                                 <label>E-mail</label>
-                                <input type="email" name="mail" disabled class="form-control" placeholder="Adres e-mail">
+                                <input type="email" name="mail" value="<?= $this->mail ?>" disabled class="form-control" placeholder="Adres e-mail">
                             </div>
                             <div class="form-group">
                                 <label>Imie</label>
-                                <input type="text" name="firstName" class="form-control" placeholder="Imię">
+                                <input type="text" name="firstName" value="<?= $this->firstname ?>" class="form-control" placeholder="Imię">
                             </div>
                             <div class="form-group">
                                 <label>Nazwisko</label>
-                                <input type="text" name="lastName" class="form-control" placeholder="Nazwisko">
+                                <input type="text" name="lastName" value="<?= $this->lastname ?>" class="form-control" placeholder="Nazwisko">
                             </div>
                             <div class="form-group">
                                 <label>PESEL</label>
-                                <input type="text" name="pesel" class="form-control" placeholder="PESEL">
+                                <input type="text" name="pesel" value="<?= $this->pesel ?>" class="form-control" placeholder="PESEL">
                             </div>
                             <div class="box-footer">
                                 <div class="btn btn-info pull-right formSubmit">Zapisz</div>

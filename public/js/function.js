@@ -59,7 +59,7 @@ var wk = {
 //        $(el).addClass('current');
 //        $('#ajax_komunikat').show();
 //
-        this.ajax(href, backFowardClicked, '.l-main', disableScroll);
+        this.ajax(href, backFowardClicked, 'body', disableScroll);
     },
     /**
      *  Wysyłka zapytania przez ajax
@@ -156,13 +156,13 @@ var wk = {
                             window.history.pushState(href, "", href);
                         }
                         if (!dataFunction) {
-                            scrollToElement('.main-header');
+                            scrollToElement('body');
                         }
                         break;
                     default:
                         console.error(templateLanguage.ERROR_TITLE, templateLanguage.ERROR_TEXT);
                 }
-                scrollToElement('.main-header');
+                scrollToElement('body');
                 if ($.isFunction(allRunFunction)) {
                     allRunFunction(data); //w data.data content
                 }
@@ -170,7 +170,7 @@ var wk = {
                 wk.ajaxAnimate = true;
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                scrollToElement('.main-header');
+                scrollToElement('body');
                 console.log('Funkcja error');
                 console.log(jqXHR);
                 //     dialog.error(templateLanguage.ERROR_TITLE, templateLanguage.ERROR_TEXT);

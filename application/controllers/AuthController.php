@@ -24,13 +24,19 @@ class AuthController extends Zend_Controller_Action {
 
         $authorization = Zend_Auth::getInstance();
         if ($authorization->hasIdentity()) {
-            $this->redirect('');
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK);
+        }
+
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
 
         $authorization->setStorage(new Zend_Auth_Storage_Session('Zend_Auth'));
 
-        $login = $this->getParam('mail');
-        $password = $this->getParam('password');
+        $login = $form['mail'];
+        $password = $form['password'];
 
         $myAdapter = new My_Auth_Adapter();
 
@@ -41,9 +47,9 @@ class AuthController extends Zend_Controller_Action {
         if ($result->isValid()) {
             $storage = $auth->getStorage();
             $storage->write($myAdapter->getResultRowObject());
-            $this->redirect('');
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK);
         } else {
-            Application_Model_Exception::exception($this->_helper, array(), new Exception('Niepoprawne dane logowania'));
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), new Exception('Niepoprawne dane logowania'));
         }
     }
 
@@ -139,15 +145,14 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
         } catch (Exception $exc) {
             $error = true;
         }
-        
+
         if ($response->getStatus() !== 200) {
             $error = true;
         }
-        
+
         if (!$error) {
             $result = 1;
-            $json = json_decode(sprintf('[%s]',$response->getBody()));
-            $msg = json_decode($json[0]);
+            $msg = json_decode($response->getBody());
             $this->_resultRow = array(
                 'login' => $this->_identity,
                 'authToken' => $msg->authToken,

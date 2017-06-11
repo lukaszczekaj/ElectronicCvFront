@@ -18,8 +18,29 @@ class ProfileController extends Zend_Controller_Action {
         $this->view->page = 'Profil';
     }
 
+    private function feedView($view, $response) {
+        if (!$response) {
+            return $view;
+        }
+        $data = json_decode($response->getBody(), true);
+        var_dump($data);
+        if (!is_array($data)) {
+            return $view;
+        }
+        foreach ($data as $key => $value) {
+            $view->$key = $value;
+        }
+        return $view;
+    }
+
     public function indexAction() {
-        
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->fetchUserData();
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $this->view = $this->feedView($this->view, $response);
     }
 
     public function saveAction() {
