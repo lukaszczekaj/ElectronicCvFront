@@ -52,8 +52,27 @@ $(document).ready(function () {
         var input = getFormData('#' + form.attr('id'));
         console.info(input);
         console.info(action);
-        wk.ajax(action, input);
+        wk.ajax(action, input, null, null, null,
+                function (data, scope) {
+                    dialog.succes(null, data.msg);
+                    setTimeout(function () {
+                        window.location = window.location.href;
+                    }, 3000);
+                });
     });
 
+    $(document).on('click', '.ajaxAction', function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var action = $this.data('action');
+        var input = {id: $this.data('id')};
+        console.info(input);
+        console.info(action);
+        wk.ajax(action, input, null, null, null,
+                function (data, scope) {
+                    dialog.succes(null, data.msg);
+                    $this.parent().closest('tr').remove();
+                });
+    });
 
 });

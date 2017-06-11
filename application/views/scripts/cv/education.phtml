@@ -32,6 +32,32 @@
     <!-- /.box-body -->
 </div>
 
+<div class="box">
+    <div class="box-body no-padding">
+        <table class="table table-condensed">
+            <tbody><tr>
+                    <th style="width: 10px">#</th>
+                    <th>Nazwa</th>
+                    <th>Data rozpoczęcia</th>
+                    <th>Data zakończenia</th>
+                    <th>Akcje</th>
+                </tr>
+                <?php foreach ($this->education as $k => $e): ?>
+                    <tr>
+                        <td><?= sprintf('%s.', $k + 1) ?></td>
+                        <td><?= $e['description'] ?></td>
+                        <td><?= $e['date_of'] ?></td>
+                        <td><?= $e['date_to'] ?></td>
+                        <td>
+                            <a href="" class="ajaxAction" data-action="/cv/remove-education" data-id="<?= $e['id'] ?>"><i class="fa fa-fw fa-remove"></i></a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody></table>
+    </div>
+    <!-- /.box-body -->
+</div>
+<!-- /.box -->
 <script>
     $(document).ready(function () {
         $("#datepicker_date_of").datepicker();

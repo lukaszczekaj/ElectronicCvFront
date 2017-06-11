@@ -166,6 +166,7 @@ var wk = {
                 if ($.isFunction(allRunFunction)) {
                     allRunFunction(data); //w data.data content
                 }
+                console.info(data.data.msg);
                 //       $('#ajax_komunikat').hide();
                 wk.ajaxAnimate = true;
             },

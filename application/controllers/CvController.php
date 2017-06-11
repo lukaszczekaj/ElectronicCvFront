@@ -29,6 +29,35 @@ class CvController extends Zend_Controller_Action {
 
     public function educationAction() {
         $this->view->subPage = 'Wykrztałcenie';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-education/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $allEducation = json_decode($response->getBody(), true);
+        $this->view = $this->feedViewEducation($this->view, $allEducation);
+    }
+
+    private function feedViewEducation($view, $allEducation) {
+        $view->education = array();
+        if (!$allEducation || !is_array($allEducation)) {
+            return $view;
+        }
+        foreach ($allEducation as $key => $value) {
+            $allEducation[$key]['date_of'] = '';
+            if (isset($value['date_of'])) {
+                $dateOf = new Zend_Date($value['date_of']);
+                $allEducation[$key]['date_of'] = $dateOf->toString('yyyy-MM-dd');
+            }
+            $allEducation[$key]['date_to'] = '';
+            if (isset($value['date_to'])) {
+                $dateTo = new Zend_Date($value['date_to']);
+                $allEducation[$key]['date_to'] = $dateTo->toString('yyyy-MM-dd');
+            }
+        }
+        $this->view->education = $allEducation;
+        return $view;
     }
 
     public function workplaceAction() {
@@ -62,7 +91,28 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana ' . json_encode($form));
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->add('/add-education/', $form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
+
+    public function removeEducationAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->delete('/remove-education/', $form['id']);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
     public function addWorkplaceAction() {

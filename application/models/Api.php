@@ -66,7 +66,48 @@ class Application_Model_Api {
         }
         return $response;
     }
-
+    
+    public function add($url, $data = array()) {
+        $this->data = array_merge($this->data, $data);
+        $response = $this->client->restPost($url, $this->data);
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
+    
+    public function get($url) {
+        $response = $this->client->restGet(sprintf('%s%s',$url, $this->authToken));
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
+    
+    
+    public function delete($url, $id) {
+        $response = $this->client->restDelete(sprintf('%s%s/%s',$url, $this->authToken, $id));
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
+    
     public function fetchUserData() {
         $response = $this->client->restGet(sprintf('/user-data/%s', $this->authToken));
         if ($response->getStatus() === 403) {
