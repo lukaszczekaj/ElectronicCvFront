@@ -13,7 +13,7 @@
                         <b>Zapisanych CV</b> <a class="pull-right">-</a>
                     </li>
                     <li class="list-group-item">
-                        <b>Zapisanych wykrztałceń</b> <a class="pull-right">-</a>
+                        <b>Zapisanych wykrztałceń</b> <a class="pull-right"> <?= $this->counteducation ?> </a>
                     </li>
                     <li class="list-group-item">
                         <b>Zapisanych miejsc pracy</b> <a class="pull-right">-</a>
@@ -60,8 +60,24 @@
                                 <input type="text" name="lastName" value="<?= $this->lastname ?>" class="form-control" placeholder="Nazwisko">
                             </div>
                             <div class="form-group">
-                                <label>PESEL</label>
-                                <input type="text" name="pesel" value="<?= $this->pesel ?>" class="form-control" placeholder="PESEL">
+                                <label>Stan cywilny</label>
+                                <input type="text" name="maritalStatus" value="<?= $this->maritalstatus ?>" class="form-control" placeholder="Stan cywilny">
+                            </div>
+                            <div class="form-group">
+                                <label>Data urodzenia</label>
+                                <input type="text" name="birthDate" value="<?= $this->birthdate ?>" class="form-control" id="datepicker_birthdate" placeholder="Data urodzenia">
+                            </div>
+                            <div class="form-group">
+                                <label>Miejsce urodzenia</label>
+                                <input type="text" name="birthPlace" value="<?= $this->birthplace ?>" class="form-control" placeholder="Miejsce urodzenia">
+                            </div>
+                            <div class="form-group">
+                                <label>Adres ulica, nr domu</label>
+                                <input type="text" name="addressStreet" value="<?= $this->addressstreet ?>" class="form-control" placeholder="Ulica">
+                            </div>
+                            <div class="form-group">
+                                <label>Adres poczta</label>
+                                <input type="text" name="addressPost" value="<?= $this->addresspost ?>" class="form-control" placeholder="Kod pocztowy, poczta">
                             </div>
                             <div class="box-footer">
                                 <div class="btn btn-info pull-right formSubmit">Zapisz</div>
@@ -107,3 +123,9 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
+
+<script>
+    $(document).ready(function () {
+        $("#datepicker_birthdate").datepicker();
+    });
+</script>

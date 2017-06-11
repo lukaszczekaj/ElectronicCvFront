@@ -61,7 +61,7 @@ $(document).ready(function () {
                 });
     });
 
-    $(document).on('click', '.ajaxAction', function (event) {
+    $(document).on('click', '.ajaxActionRemove', function (event) {
         event.preventDefault();
         var $this = $(this);
         var action = $this.data('action');

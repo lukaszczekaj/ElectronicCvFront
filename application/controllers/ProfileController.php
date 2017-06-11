@@ -18,6 +18,21 @@ class ProfileController extends Zend_Controller_Action {
         $this->view->page = 'Profil';
     }
 
+    private function explodeKey($key, $value) {
+        switch ($key) {
+            case 'birthdate':
+                if (!is_null($value)) {
+                    $date = new Zend_Date($value, 'yyy-MM-dd HH:mm:ss');
+                    $value = $date->toString('MM/dd/YYYY');
+                }
+                break;
+
+            default:
+                break;
+        }
+        return $value;
+    }
+
     private function feedView($view, $response) {
         if (!$response) {
             return $view;
@@ -27,7 +42,7 @@ class ProfileController extends Zend_Controller_Action {
             return $view;
         }
         foreach ($data as $key => $value) {
-            $view->$key = $value;
+            $view->$key = $this->explodeKey($key, $value);
         }
         return $view;
     }
