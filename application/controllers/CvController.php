@@ -35,41 +35,66 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
         }
-        $allEducation = json_decode($response->getBody(), true);
-        $this->view = $this->feedViewEducation($this->view, $allEducation);
+        $this->view = $this->feedViewAnArray($this->view, 'education', json_decode($response->getBody(), true));
     }
 
-    private function feedViewEducation($view, $allEducation) {
-        $view->education = array();
-        if (!$allEducation || !is_array($allEducation)) {
+    private function feedViewAnArray($view, $name, $array) {
+        $view->{$name} = array();
+        if (!$array || !is_array($array)) {
             return $view;
         }
-        foreach ($allEducation as $key => $value) {
-            $allEducation[$key]['date_of'] = '';
+        foreach ($array as $key => $value) {
+            $array[$key]['date_of'] = '';
             if (isset($value['date_of'])) {
                 $dateOf = new Zend_Date($value['date_of']);
-                $allEducation[$key]['date_of'] = $dateOf->toString('yyyy-MM-dd');
+                $array[$key]['date_of'] = $dateOf->toString('yyyy-MM-dd');
             }
-            $allEducation[$key]['date_to'] = '';
+            $array[$key]['date_to'] = '';
             if (isset($value['date_to'])) {
                 $dateTo = new Zend_Date($value['date_to']);
-                $allEducation[$key]['date_to'] = $dateTo->toString('yyyy-MM-dd');
+                $array[$key]['date_to'] = $dateTo->toString('yyyy-MM-dd');
+            }
+            $array[$key]['date'] = '';
+            if (isset($value['date'])) {
+                $date = new Zend_Date($value['date']);
+                $array[$key]['date'] = $date->toString('yyyy-MM-dd');
             }
         }
-        $this->view->education = $allEducation;
+        $this->view->{$name} = $array;
         return $view;
     }
 
     public function workplaceAction() {
         $this->view->subPage = 'Miejsce pracy';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-workplace/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'workplace', json_decode($response->getBody(), true));
     }
 
     public function additionalSkillsAction() {
         $this->view->subPage = 'Dodatkowe umiejętności';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-additional-skills/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'additionalSkills', json_decode($response->getBody(), true));
     }
 
     public function languagesAction() {
         $this->view->subPage = 'Języki';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-languages/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'languages', json_decode($response->getBody(), true));
     }
 
     public function linksAction() {
@@ -99,6 +124,21 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
+    
+    public function addLanguagesAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->add('/add-languages/', $form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
 
     public function removeEducationAction() {
         try {
@@ -114,6 +154,51 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
+    
+    public function removeLanguagesAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->delete('/remove-languages/', $form['id']);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
+    
+    public function removeWorkplaceAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->delete('/remove-workplace/', $form['id']);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
+    
+    public function removeAdditionalSkillsAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->delete('/remove-additional-skills/', $form['id']);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
 
     public function addWorkplaceAction() {
         try {
@@ -121,16 +206,28 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana ' . json_encode($form));
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->add('/add-workplace/', $form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
     public function addAdditionalSkillsAction() {
-        try {
+       try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana ' . json_encode($form));
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->add('/add-additional-skills/', $form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
     public function pdfAction() {
