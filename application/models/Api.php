@@ -52,6 +52,20 @@ class Application_Model_Api {
         }
         return $response;
     }
+    
+    public function changePassword($data = array()) {
+        $this->data = array_merge($this->data, $data);
+        $response = $this->client->restPost('/change-pass/', $this->data);
+        if ($response->getStatus() === 403) {
+            $auth = Zend_Auth::getInstance();
+            $auth->clearIdentity();
+            throw new Exception($response->getBody(), 403);
+        }
+        if ($response->getStatus() !== 200) {
+            throw new Exception($response->getBody());
+        }
+        return $response;
+    }
 
     public function fetchUserData() {
         $response = $this->client->restGet(sprintf('/user-data/%s', $this->authToken));

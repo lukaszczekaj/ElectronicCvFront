@@ -23,7 +23,6 @@ class ProfileController extends Zend_Controller_Action {
             return $view;
         }
         $data = json_decode($response->getBody(), true);
-        var_dump($data);
         if (!is_array($data)) {
             return $view;
         }
@@ -65,7 +64,13 @@ class ProfileController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, 'Metoda jeszcze nie wspierana');
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->changePassword($form);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
 
 }
