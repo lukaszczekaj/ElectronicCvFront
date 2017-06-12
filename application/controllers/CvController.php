@@ -45,6 +45,31 @@ class CvController extends Zend_Controller_Action {
 
     public function addAction() {
         $this->view->subPage = 'Dodaj CV';
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->get('/list-education/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'education', json_decode($response->getBody(), true));
+        try {
+            $response = $api->get('/list-workplace/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'workplace', json_decode($response->getBody(), true));
+        try {
+            $response = $api->get('/list-additional-skills/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'additionalSkills', json_decode($response->getBody(), true));
+        try {
+            $response = $api->get('/list-languages/');
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        $this->view = $this->feedViewAnArray($this->view, 'languages', json_decode($response->getBody(), true));
     }
 
     public function educationAction() {
@@ -60,6 +85,7 @@ class CvController extends Zend_Controller_Action {
 
     private function feedViewAnArray($view, $name, $array) {
         $view->{$name} = array();
+        //    var_dump($array);
         if (!$array || !is_array($array)) {
             return $view;
         }
@@ -121,19 +147,94 @@ class CvController extends Zend_Controller_Action {
         $this->view->subPage = 'Linki';
     }
 
+    private function explodeAddFormCvArray($cv) {
+        if (!$cv) {
+            return $cv;
+        }
+        if (!is_array($cv)) {
+            return $cv;
+        }
+        foreach ($cv as $key => $value) {
+
+            try {
+                $explode = explode('_', $key);
+            } catch (Exception $exc) {
+                continue;
+            }
+            switch ($explode[0]) {
+                case 'education':
+                    if (!isset($cv['education'])) {
+                        $cv['education'] = array();
+                    }
+                    if (intval($value) == 1) {
+                        array_push($cv['education'], $explode[1]);
+                    }
+                    unset($cv[$key]);
+                    break;
+                case 'workplace':
+                    if (!isset($cv['workplace'])) {
+                        $cv['workplace'] = array();
+                    }
+                    if (intval($value) == 1) {
+                        array_push($cv['workplace'], $explode[1]);
+                    }
+                    unset($cv[$key]);
+                    break;
+                case 'languages':
+                    if (!isset($cv['languages'])) {
+                        $cv['languages'] = array();
+                    }
+                    if (intval($value) == 1) {
+                        array_push($cv['languages'], $explode[1]);
+                    }
+                    unset($cv[$key]);
+                    break;
+                case 'additionalSkills':
+                    if (!isset($cv['additionalSkills'])) {
+                        $cv['additionalSkills'] = array();
+                    }
+                    if (intval($value) == 1) {
+                        array_push($cv['additionalSkills'], $explode[1]);
+                    }
+                    unset($cv[$key]);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        if (isset($cv['education'])) {
+            $cv['education'] = json_encode($cv['education']);
+        }
+        if (isset($cv['workplace'])) {
+            $cv['workplace'] = json_encode($cv['workplace']);
+        }
+        if (isset($cv['additionalSkills'])) {
+            $cv['additionalSkills'] = json_encode($cv['additionalSkills']);
+        }
+        if (isset($cv['languages'])) {
+            $cv['languages'] = json_encode($cv['languages']);
+        }
+        return $cv;
+    }
+
     public function saveAction() {
         try {
             $form = $this->_helper->Function->filterInputs($this->getAllParams());
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
+
+        $formData = $this->explodeAddFormCvArray($form);
+
         $api = new Application_Model_Api();
         try {
-            $response = $api->add('/add-cv/', $form);
+            $response = $api->add('/add-cv/', $formData);
         } catch (Exception $exc) {
             return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+//        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_WARN, json_encode($formData));
     }
 
     public function addEducationAction() {
@@ -262,8 +363,99 @@ class CvController extends Zend_Controller_Action {
         }
         $myCv = $userData;
         $myCv['name'] = sprintf('%s %s', $userData['firstname'], $userData['lastname']);
-        
+        $myCv['layout'] = $cv['pdf_layout'];
+        $date = new Zend_Date($userData['birthdate']);
+        $myCv['birthdate'] = $date->toString('d MMMM YYYY');
+
+        $api = new Application_Model_Api();
+        if (isset($cv['list_education'])) {
+            try {
+                $education = $api->get('/list-education/');
+            } catch (Exception $exc) {
+                throw new Exception($exc->getMessage());
+            }
+            $myCv['education'] = $this->explodeListToCV($cv, json_decode($education->getBody(), true), 'list_education');
+        }
+        if (isset($cv['list_workplace'])) {
+            try {
+                $education = $api->get('/list-workplace/');
+            } catch (Exception $exc) {
+                throw new Exception($exc->getMessage());
+            }
+            $myCv['workplace'] = $this->explodeListToCV($cv, json_decode($education->getBody(), true), 'list_workplace');
+        }
+        if (isset($cv['list_languages'])) {
+            try {
+                $education = $api->get('/list-languages/');
+            } catch (Exception $exc) {
+                throw new Exception($exc->getMessage());
+            }
+            $myCv['languages'] = $this->explodeListToCV($cv, json_decode($education->getBody(), true), 'list_languages');
+        }
+        if (isset($cv['list_additional_skills'])) {
+            try {
+                $education = $api->get('/list-languages/');
+            } catch (Exception $exc) {
+                throw new Exception($exc->getMessage());
+            }
+            $myCv['additionalSkills'] = $this->explodeListToCV($cv, json_decode($education->getBody(), true), 'list_additional_skills');
+        }
+
+
         return $myCv;
+    }
+
+    private function getElementFromArray($id, $array) {
+        if (!$array) {
+            return array();
+        }
+        if (!is_array($array)) {
+            return;
+        }
+        foreach ($array as $value) {
+            if ($value['id'] == $id) {
+                return $value;
+            }
+        }
+        return array();
+    }
+
+    private function explodeListToCV($cv, $array, $name) {
+        $output = array();
+
+        // throw new Exception(json_encode(json_decode($cv[$name], true)));
+
+        foreach (json_decode($cv[$name], true) as $v) {
+
+            $e = $this->getElementFromArray($v, $array);
+            if (!$e) {
+                continue;
+            }
+
+            switch ($name) {
+                case 'list_languages':
+                    array_push($output, array(
+                        'name' => $e['name'],
+                        'description' => $e['description']
+                    ));
+                    break;
+                case 'list_additional_skills':
+                    array_push($output, array(
+                        'name' => $e['description']
+                    ));
+                    break;
+                default:
+                    $date_of = new Zend_Date($e['date_of']);
+                    $e['date_of'] = $date_of->toString('YYY.MM');
+                    $date_to = new Zend_Date($e['date_to']);
+                    $e['date_to'] = $date_to->toString('YYY.MM');
+                    array_push($output, array(
+                        'date' => sprintf('%s - %s', $e['date_of'], $e['date_to']),
+                        'name' => $e['description']
+                    ));
+            }
+        }
+        return $output;
     }
 
     public function pdfAction() {
@@ -284,39 +476,9 @@ class CvController extends Zend_Controller_Action {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
 
+        //   throw new Exception(json_encode($cv));
 
         $data = array(
-            'maritalStatus' => 'Kawaler',
-            'birthDate' => '1 czerwiec 1991',
-            'birthPlace' => 'Kielce',
-            'addressStreet' => 'Lechówek 47A',
-            'addressPost' => '26-025 Łagów',
-            'phone' => '874587344',
-            'mail' => 'lukasz@lukaszczekaj.pl',
-            'education' => array(
-                array(
-                    'date' => '2011 - nadal',
-                    'name' => 'Studia Inżynierskie na Politechnice Świętokrzyskiej w Kielcach, kierunek informatyka'
-                ),
-                array(
-                    'date' => '2007 - 2011',
-                    'name' => 'Zespół Szkół Informatycznych im. gen. Józefa Hauke Bosaka w Kielcach, tytuł technika informatyka'
-                )
-            ),
-            'workplace' => array(
-                array(
-                    'date' => '07.2013',
-                    'name' => 'Miesięczne praktyki zawodowe w firmie Complex Computers Sp. z o.o. w Kielcach'
-                ),
-                array(
-                    'date' => '05.2012',
-                    'name' => 'Uczestnictwo w kursie CCNA Exploration: Network Fundamentals'
-                ),
-                array(
-                    'date' => '06.2009 – 10.2010',
-                    'name' => 'Uczestnictwo w szkoleniu „Uczeń z międzynarodowym certyfikatem zawodowym- modelowe rozwiązanie dla świętokrzyskich pracodawców” realizowane przez COMBIDATA POLAND Sp. z o.o.'
-                )
-            ),
             'languages' => array(
                 array(
                     'name' => 'j. angielski',
@@ -350,19 +512,16 @@ class CvController extends Zend_Controller_Action {
         $api = new Application_Model_Api();
 
         try {
-            $response = $api->login(array(
-                'mail' => 'asdsad',
-                'password' => 'asdasd'
-            ));
+            $response = $api->get('/list-education/');
         } catch (Exception $exc) {
-            var_dump($exc->getMessage());
+            throw new Exception($exc->getMessage());
         }
 
 
-
+        echo '<pre>';
         var_dump($response->getStatus());
         var_dump($response->getMessage());
-        var_dump($response->getBody());
+        var_dump(json_decode($response->getBody(), true));
         var_dump($response);
     }
 
@@ -378,6 +537,9 @@ class CvPdfGenerator {
 
     public function setData($data) {
         $this->data = $data;
+        if (isset($data['layout'])) {
+            $this->layout = $data['layout'];
+        }
     }
 
     public function setLayout($layout) {
@@ -397,7 +559,7 @@ class CvPdfGenerator {
 
     private function getHTML() {
         $invoiceHTML = new Zend_View();
-        $invoiceHTML->setScriptPath(APPLICATION_PATH . '/views/scripts/cv');
+        $invoiceHTML->setScriptPath(APPLICATION_PATH . '/views/scripts/cv/pdf-layouts');
         foreach ($this->data as $key => $value) {
             $invoiceHTML->assign($key, $value);
         }

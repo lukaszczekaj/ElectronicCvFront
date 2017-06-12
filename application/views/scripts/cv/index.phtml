@@ -12,7 +12,7 @@
                     <tr>
                         <td><?= sprintf('%s.', $k + 1) ?></td>
                         <td><?= $cv['name'] ?></td>
-                        <td><?= $cv['pdf_layout'] ?></td>
+                        <td><?= Application_Model_PdfLayout::convertIntToStringRepresentation($cv['pdf_layout']) ?></td>
                         <td><?= $cv['interests'] ?></td>
                         <td>
                             <a href="/cv/pdf/<?= $cv['id'] ?>">

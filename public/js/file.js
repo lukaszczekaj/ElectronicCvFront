@@ -57,7 +57,7 @@ $(document).ready(function () {
                     dialog.succes(null, data.msg);
                     setTimeout(function () {
                         window.location = window.location.href;
-                    }, 3000);
+                    }, 2000);
                 });
     });
 
