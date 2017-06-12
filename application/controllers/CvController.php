@@ -32,7 +32,7 @@ class CvController extends Zend_Controller_Action {
 
     private function feedViewCv($view, $cvs) {
         $view->cvs = array();
-        var_dump($cvs);
+      //  var_dump($cvs);
         if (!$cvs || !is_array($cvs)) {
             return $view;
         }
@@ -296,6 +296,21 @@ class CvController extends Zend_Controller_Action {
         }
         return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
     }
+    
+    public function removeCvAction() {
+        try {
+            $form = $this->_helper->Function->filterInputs($this->getAllParams());
+        } catch (Exception $exc) {
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
+        }
+        $api = new Application_Model_Api();
+        try {
+            $response = $api->delete('/remove-cv/', $form['id']);
+        } catch (Exception $exc) {
+            return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
+        }
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+    }
 
     public function removeWorkplaceAction() {
         try {
@@ -475,31 +490,6 @@ class CvController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-
-        //   throw new Exception(json_encode($cv));
-
-        $data = array(
-            'languages' => array(
-                array(
-                    'name' => 'j. angielski',
-                    'description' => '- poziom średni w mowie i piśmie'
-                )
-            ),
-            'additionalSkills' => array(
-                array(
-                    'name' => 'szybkie nawiązywanie kontaktów, umiejętność współpracy w zespole'
-                ),
-                array(
-                    'name' => 'bardzo dobra obsługa komputera, znajomość systemów operacyjnych Windows oraz urządzeń peryferyjnych komputera'
-                ),
-                array(
-                    'name' => 'bardzo dobra znajomość zagadnień związanych z sieciami komputerowymi'
-                ),
-                array(
-                    'name' => 'prawo jazdy kat. B.'
-                )
-            )
-        );
 
         $pdf = new CvPdfGenerator();
         $pdf->setData($cv);

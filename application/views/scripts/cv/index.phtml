@@ -6,7 +6,7 @@
                     <th>Nazwa CV</th>
                     <th>Wygląd</th>
                     <th>Zainteresowania</th>
-                    <th>PDF</th>
+                    <th>Akcje</th>
                 </tr>
                 <?php foreach ($this->cvs as $k => $cv): ?>
                     <tr>
@@ -18,6 +18,7 @@
                             <a href="/cv/pdf/<?= $cv['id'] ?>">
                                 <i class="fa fa-fw fa-download"></i>
                             </a>
+                            <a href="" class="ajaxActionRemove" data-action="/cv/remove-cv" data-id="<?= $cv['id'] ?>"><i class="fa fa-fw fa-remove"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
