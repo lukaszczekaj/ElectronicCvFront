@@ -45,6 +45,9 @@
         <![endif]-->
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
+
+        <?php $identify = Zend_Auth::getInstance()->getIdentity(); ?>
+
         <div class="wrapper">
 
             <header class="main-header">
@@ -67,13 +70,13 @@
                             <!-- User Account: style can be found in dropdown.less -->
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                    <img src="<?= ($identify->profilePicture) ? $identify->profilePicture : '/dist/img/user2-160x160.jpg' ?>" class="user-image profilePicture" alt="User Image">
                                     <span class="hidden-xs"><?= Zend_Auth::getInstance()->getIdentity()->name ?></span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                        <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                        <img src="<?= ($identify->profilePicture) ? $identify->profilePicture : '/dist/img/user2-160x160.jpg' ?>" class="img-circle profilePicture" alt="User Image">
 
                                         <p>
                                             <?= Zend_Auth::getInstance()->getIdentity()->name ?>
@@ -102,7 +105,7 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left image">
-                            <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                            <img src="<?= ($identify->profilePicture) ? $identify->profilePicture : '/dist/img/user2-160x160.jpg' ?>" class="img-circle profilePicture" alt="User Image">
                         </div>
                         <div class="pull-left info">
                             <p><?= Zend_Auth::getInstance()->getIdentity()->name ?></p>

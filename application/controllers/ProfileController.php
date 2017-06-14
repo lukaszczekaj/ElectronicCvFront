@@ -100,7 +100,14 @@ class ProfileController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_ERROR, $exc->getMessage());
         }
-        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, $response->getBody());
+
+        $auth = Zend_Auth::getInstance();
+        $storage = $auth->getStorage();
+        $array = Zend_Auth::getInstance()->getIdentity();
+        $array->profilePicture = $src;
+        $storage->write($array);
+
+        return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK, array('msg' => $response->getBody(), 'content' => $src));
     }
 
 }

@@ -86,7 +86,18 @@ $(document).ready(function () {
             processData: false, // To send DOMDocument or non processed data file it is set to false
             success: function (data)   // A function to be called if request succeeds
             {
-                console.log(data);
+                var r = JSON.parse(data);
+                console.log(r);
+                if (r.code === AjaxResponse_CODE.CODE_OK) {
+                    dialog.succes(null, r.data.msg);
+                    setTimeout(function () {
+                        window.location = window.location.href;
+                    }, 2000);
+                } else {
+                    dialog.error(null, r.data.msg);
+                }
+
+
             }
         });
     });

@@ -156,7 +156,8 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
             $this->_resultRow = array(
                 'login' => $this->_identity,
                 'authToken' => $msg->authToken,
-                'name' => $msg->name
+                'name' => $msg->name,
+                'profilePicture' => $msg->profilePicture
             );
         }
         $authResult = new Zend_Auth_Result($result, $this->_identity);
