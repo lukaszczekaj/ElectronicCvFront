@@ -74,6 +74,22 @@ $(document).ready(function () {
                     $this.parent().closest('tr').remove();
                 });
     });
+    
+    $(document).on('click', '.ajaxAction', function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var action = $this.data('action');
+        var input = {id: $this.data('id')};
+        console.info(input);
+        console.info(action);
+        wk.ajax(action, input, null, null, null,
+                function (data, scope) {
+                    dialog.succes(null, data.msg);
+                    setTimeout(function () {
+                        window.location = window.location.href;
+                    }, 2000);
+                });
+    });
 
     $(document).on('click', '#profilePictureFormSubmit', function (event) {
         event.preventDefault();

@@ -33,11 +33,11 @@ class ProfileController extends Zend_Controller_Action {
         return $value;
     }
 
-    private function feedView($view, $response) {
-        if (!$response) {
+    private function feedView($view, $data) {
+        if (!$data) {
             return $view;
         }
-        $data = json_decode($response->getBody(), true);
+       // $data = json_decode($response->getBody(), true);
         //     var_dump($data);
         if (!is_array($data)) {
             return $view;
@@ -55,7 +55,9 @@ class ProfileController extends Zend_Controller_Action {
         } catch (Exception $exc) {
             Application_Model_Exception::exception($this->_helper, $this->getAllParams(), $exc);
         }
-        $this->view = $this->feedView($this->view, $response);
+        $data = json_decode($response->getBody(), true);
+        $this->view = $this->feedView($this->view, $data['user']);
+        $this->view = $this->feedView($this->view, $data['userInfo']);
     }
 
     public function saveAction() {

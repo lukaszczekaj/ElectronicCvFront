@@ -49,7 +49,7 @@ class AuthController extends Zend_Controller_Action {
             $storage->write($myAdapter->getResultRowObject());
             return $this->_helper->ResponseAjax->response(Application_Model_AjaxResponseCode::CODE_OK);
         } else {
-            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), new Exception('Niepoprawne dane logowania'));
+            Application_Model_Exception::exception($this->_helper, $this->getAllParams(), new Exception($myAdapter->getMessage()));
         }
     }
 
@@ -126,7 +126,8 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
     protected $_identity = null;
     protected $_credential = null;
     protected $_resultRow = array();
-
+    protected $_message = '';
+    
     public function __construct() {
         
     }
@@ -149,6 +150,8 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
         if ($response->getStatus() !== 200) {
             $error = true;
         }
+        
+        $this->_message = $response->getBody();
 
         if (!$error) {
             $result = 1;
@@ -157,7 +160,8 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
                 'login' => $this->_identity,
                 'authToken' => $msg->authToken,
                 'name' => $msg->name,
-                'profilePicture' => $msg->profilePicture
+                'profilePicture' => $msg->profilePicture,
+                'id' => $msg->id
             );
         }
         $authResult = new Zend_Auth_Result($result, $this->_identity);
@@ -183,6 +187,10 @@ class My_Auth_Adapter implements Zend_Auth_Adapter_Interface {
         }
 
         return $returnObject;
+    }
+    
+    public function getMessage() {
+        return $this->_message;
     }
 
 }

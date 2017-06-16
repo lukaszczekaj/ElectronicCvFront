@@ -46,7 +46,10 @@
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
 
-        <?php $identify = Zend_Auth::getInstance()->getIdentity(); ?>
+        <?php
+        $identify = Zend_Auth::getInstance()->getIdentity();
+        $appRole = Application_Model_AppRole::getUserRole();
+        ?>
 
         <div class="wrapper">
 
@@ -124,31 +127,54 @@
                     </form>
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                    <ul class="sidebar-menu">
-                        <li>
-                            <a href="/">
-                                <i class="fa fa-dashboard"></i> <span>Strona główna</span>
-                            </a>
-                        </li>
-                        <li class="treeview <?= ($this->menuPage == 'cv') ? 'active' : '' ?>">
-                            <a href="#">
-                                <i class="fa fa-edit"></i>
-                                <span>Moje CV</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="/cv"><i class="fa fa-circle-o"></i> Zapisane CV</a></li>
-                                <li><a href="/cv/add"><i class="fa fa-circle-o"></i> Dodaj CV</a></li>
-                                <li><a href="/cv/education"><i class="fa fa-circle-o"></i> Wykrztałcenie</a></li>
-                                <li><a href="/cv/workplace"><i class="fa fa-circle-o"></i> Miejsce pracy</a></li>
-                                <li><a href="/cv/additional-skills"><i class="fa fa-circle-o"></i> Dodatkowe umiejętności</a></li>
-                                <li><a href="/cv/languages"><i class="fa fa-circle-o"></i> Języki</a></li>
-                                <li><a href="/cv/links"><i class="fa fa-circle-o"></i> Linki</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <?php if ($appRole == 'admin'): ?>
+                        <ul class="sidebar-menu">
+                            <li>
+                                <a href="/admin">
+                                    <i class="fa fa-dashboard"></i> <span>Panel admina</span>
+                                </a>
+                            </li>
+                            <li class="treeview <?= ($this->menuPage == 'users') ? 'active' : '' ?>">
+                                <a href="#">
+                                    <i class="fa fa-user"></i>
+                                    <span>Użytkownicy</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="/admin/users"><i class="fa fa-users"></i> Lista użytkowników</a></li>
+                                    <li><a href="/admin/users-add"><i class="fa fa-user-plus"></i> Dodaj użytkownika</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    <?php else: ?>
+                        <ul class="sidebar-menu">
+                            <li>
+                                <a href="/">
+                                    <i class="fa fa-dashboard"></i> <span>Strona główna</span>
+                                </a>
+                            </li>
+                            <li class="treeview <?= ($this->menuPage == 'cv') ? 'active' : '' ?>">
+                                <a href="#">
+                                    <i class="fa fa-edit"></i>
+                                    <span>Moje CV</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="/cv"><i class="fa fa-circle-o"></i> Zapisane CV</a></li>
+                                    <li><a href="/cv/add"><i class="fa fa-circle-o"></i> Dodaj CV</a></li>
+                                    <li><a href="/cv/education"><i class="fa fa-circle-o"></i> Wykrztałcenie</a></li>
+                                    <li><a href="/cv/workplace"><i class="fa fa-circle-o"></i> Miejsce pracy</a></li>
+                                    <li><a href="/cv/additional-skills"><i class="fa fa-circle-o"></i> Dodatkowe umiejętności</a></li>
+                                    <li><a href="/cv/languages"><i class="fa fa-circle-o"></i> Języki</a></li>
+                                    <li><a href="/cv/links"><i class="fa fa-circle-o"></i> Linki</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    <?php endif; ?>
                 </section>
                 <!-- /.sidebar -->
             </aside>
