@@ -36,6 +36,11 @@
             > span {
                 display: table-row;
             }
+            
+            > img {
+                height: 100px;
+                width: 100px;
+            }
 
         }
 
@@ -53,7 +58,7 @@
 
     .item {
         @extend .item-header;
-        
+
         margin-bottom: 15px;
 
         .item-title {
@@ -68,7 +73,7 @@
             display: table;
             margin-bottom: 5px;
         }
-        
+
         li {
             font-size: 14px;
         }

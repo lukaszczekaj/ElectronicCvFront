@@ -376,9 +376,11 @@ class CvController extends Zend_Controller_Action {
         if (!$cv || !$userData) {
             throw new Exception('Brak kompletnych danych');
         }
+        $userData = $userData['user'];
         $myCv = $userData;
         $myCv['name'] = sprintf('%s %s', $userData['firstname'], $userData['lastname']);
         $myCv['layout'] = $cv['pdf_layout'];
+        $myCv['image'] = $userData['image'];
         $date = new Zend_Date($userData['birthdate']);
         $myCv['birthdate'] = $date->toString('d MMMM YYYY');
 
